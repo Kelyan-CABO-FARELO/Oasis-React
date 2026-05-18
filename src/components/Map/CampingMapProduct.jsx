@@ -76,10 +76,6 @@ const CampingMap = ({
                 return;
             }
 
-            // 🔒 VÉRIFICATION : Le bien est vendu s'il a au moins 1 utilisateur lié
-            const productUsers = product.user || product.users || [];
-            const isSold = productUsers.length > 0;
-
             const title = product.title.toLowerCase();
             const capacity = extractCapacity(title);
 
@@ -117,8 +113,8 @@ const CampingMap = ({
                 else if (capacity >= 6) el.style.fill = "#8B5CF6";
             }
 
-            // 🎯 LOGIQUE DE CLIC (Seulement si c'est ouvert ET non vendu)
-            if (!isClosed && !isSold) {
+            // 🎯 LOGIQUE DE CLIC (Seulement si c'est ouvert)
+            if (!isClosed) {
                 el.onclick = (e) => {
                     e.stopPropagation();
 
@@ -371,14 +367,13 @@ const CampingMap = ({
                 </svg>
             </div>
 
-            {/* LÉGENDE MISE À JOUR */}
+            {/* LÉGEND */}
             <div className="flex justify-center gap-4 md:gap-6 mt-8 text-sm font-bold text-slate-600 flex-wrap">
                 <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-blue-500"></span> 2 à 3 pers.</span>
                 <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-emerald-500"></span> 4 pers.</span>
                 <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-amber-500"></span> 5 pers.</span>
                 <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-purple-500"></span> 6 à 8 pers.</span>
                 <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-red-500"></span> Loué / Réservé</span>
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-[#334155]"></span> Déjà Vendu</span>
             </div>
         </div>
     );
