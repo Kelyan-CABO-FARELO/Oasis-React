@@ -3,6 +3,7 @@ import React from "react";
 import AdminDashboard from "../screens/OnlineScreens/AdminDashboard.jsx";
 import OwnerDashboard from "../screens/OnlineScreens/OwnerDashboard.jsx";
 import { useAuthContext } from "../contexts/AuthContext.jsx";
+import CreatePassword from "../screens/OfflineScreens/CreatePassword.jsx";
 
 const RootRedirect = () => {
     const { roles, signOut } = useAuthContext();
@@ -45,6 +46,10 @@ const OnlineRouter = createBrowserRouter([
     {
         path: "/owner",
         element: <OwnerGuard />,
+    },
+    {
+        path: "/password",
+        element: <CreatePassword />,
     },
     {
         path: "*",

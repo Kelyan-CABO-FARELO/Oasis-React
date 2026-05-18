@@ -98,9 +98,9 @@ const Home = () => {
                                     <span className="font-bold text-lg">+33(0)6 61 92 46 30</span>
                                 </a>
 
-                                <a href="mailto:kelyan.cf@gmail.com" className="flex items-center gap-4 bg-white/20 hover:bg-white/30 transition-all p-4 rounded-2xl backdrop-blur-md group">
+                                <a href="mailto:contact@loasis.com" className="flex items-center gap-4 bg-white/20 hover:bg-white/30 transition-all p-4 rounded-2xl backdrop-blur-md group">
                                     <span className="text-2xl group-hover:scale-110 transition-transform">✉️</span>
-                                    <span className="font-medium truncate">kelyan.cf@gmail.com</span>
+                                    <span className="font-medium truncate">contact.cf@loasis.com</span>
                                 </a>
                             </div>
                         </div>

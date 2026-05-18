@@ -6,6 +6,7 @@ import InvoiceList from '../../components/Admin/InvoiceList.jsx';
 import { productService } from '../../services/productService.js';
 import { useAuthContext } from '../../contexts/AuthContext.jsx';
 import OwnerRequests from '../../components/Admin/OwnerRequests.jsx';
+import RgpdDashboard from '../../components/Admin/RgpdDashboard.jsx';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('reservations');
@@ -83,6 +84,10 @@ const AdminDashboard = () => {
                     >
                         🤝 Demandes Propriétaires
                     </button>
+
+                    <button onClick={() => setActiveTab('rgpd')} className={getMenuClass('rgpd')}>
+                        <span className="text-xl">🔒</span> Conformité RGPD
+                    </button>
                 </nav>
 
                 <div className="p-4 border-t border-amber-100">
@@ -104,12 +109,14 @@ const AdminDashboard = () => {
                         {activeTab === 'users' && 'Base de données Clients'}
                         {activeTab === 'invoices' && 'Comptabilité & Factures'}
                         {activeTab === 'map' && "Disponibilités en temps réel"}
+                        {activeTab === 'rgpd' && 'Sécurité & Conformité RGPD'}
                     </h2>
                     <p className="text-slate-600 font-medium mt-1">
                         {activeTab === 'reservations' && 'Consultez et gérez les séjours de vos vacanciers.'}
                         {activeTab === 'users' && 'Retrouvez les fiches détaillées de vos clients.'}
                         {activeTab === 'invoices' && 'Consultez les factures et surveillez les délais de conservation (3 ans).'}
                         {activeTab === 'map' && 'Visualisez les emplacements libres et occupés aujourd\'hui sur le domaine.'}
+                        {activeTab === 'rgpd' && 'Surveillez et gérez la conservation légale de vos données.'}
                     </p>
                 </div>
 
@@ -140,6 +147,8 @@ const AdminDashboard = () => {
                     )}
 
                     {activeTab === 'owner-requests' && <OwnerRequests />}
+
+                    {activeTab === 'rgpd' && <RgpdDashboard />}
                 </div>
 
             </main>

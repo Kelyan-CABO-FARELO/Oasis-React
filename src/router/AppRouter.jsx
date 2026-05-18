@@ -16,9 +16,10 @@ const AppRouter = () => {
             const token = localStorage.getItem(TOKEN_KEY);
             const userInfosStr = localStorage.getItem(USER_INFOS);
 
-            // 🛑 LE VIGILE : Si le local storage est vide ou partiel, on nettoie TOUT !
+            // 🛑 LE VIGILE : Si le local storage est vide ou partiel, on nettoie et on continue en mode déconnecté !
             if (!token || !userInfosStr) {
-                await signOut();
+                localStorage.removeItem(USER_INFOS);
+                localStorage.removeItem(TOKEN_KEY);
                 setIsChecking(false);
                 return; // On arrête l'exécution ici
             }

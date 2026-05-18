@@ -74,10 +74,17 @@ const OwnerRequests = () => {
     const [contractSigned, setContractSigned] = useState(false);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
     const [clientSecret, setClientSecret] = useState('');
+    const [contractDuration, setContractDuration] = useState(1);
 
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        if (selectedProduct) {
+            setAmount(calculateEstimatedPrice(selectedProduct, contractDuration));
+        }
+    }, [selectedProduct, contractDuration]);
 
     const fetchData = async () => {
         setLoading(true);
@@ -111,15 +118,20 @@ const OwnerRequests = () => {
         }
     };
 
-    const calculateEstimatedPrice = (product) => {
-        if (!product.prices || product.prices.length === 0) return '';
+    const calculateEstimatedPrice = (product, duration = 1) => {
+        if (!product || !product.prices || product.prices.length === 0) return '';
         const nightlyPriceEuro = product.prices[0].price / 100;
         const title = product.title.toLowerCase();
         let multiplier = 100; // Multiplicateur de base pour la saison
         if (title.includes('mobilehome') || title.includes('mobile')) multiplier = 150;
         else if (title.includes('caravane')) multiplier = 80;
         else if (title.includes('emplacement')) multiplier = 100;
-        return Math.round(nightlyPriceEuro * multiplier);
+        
+        const basePrice = nightlyPriceEuro * multiplier;
+        if (duration === 2) {
+            return Math.round(basePrice * 1.8);
+        }
+        return Math.round(basePrice);
     };
 
     const handleDownloadContract = async () => {
@@ -143,7 +155,7 @@ const OwnerRequests = () => {
         try {
             const data = await apiFetch(`/users/${selectedUser.id}/make-owner`, {
                 method: 'POST',
-                body: JSON.stringify({ amount, productId: selectedProduct.id })
+                body: JSON.stringify({ amount, productId: selectedProduct.id, duration: contractDuration })
             });
             setClientSecret(data.clientSecret);
             setSaleStep(3); // Go étape 3 Stripe !
@@ -220,7 +232,7 @@ const OwnerRequests = () => {
                         {saleStep === 1 && (
                             <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-10">
                                 <div className="lg:col-span-2 bg-slate-50 rounded-[2rem] border-2 border-slate-100 overflow-hidden relative min-h-[450px]">
-                                    <CampingMap allProducts={products} availableProducts={products} selectedCategory="all" totalOccupants={0} onProductSelect={(product) => { setSelectedProduct(product); setAmount(calculateEstimatedPrice(product)); }} />
+                                    <CampingMap allProducts={products} availableProducts={products} selectedCategory="all" totalOccupants={0} onProductSelect={(product) => setSelectedProduct(product)} />
                                 </div>
                                 <div className="flex flex-col justify-center space-y-6">
                                     <div className={`p-6 rounded-3xl border-2 transition-all ${selectedProduct ? 'border-emerald-500 bg-emerald-50/50' : 'border-slate-100 bg-slate-50'}`}>
@@ -231,7 +243,18 @@ const OwnerRequests = () => {
                                         <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wide">Prix de vente final (€)</label>
                                         <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-emerald-500 outline-none text-3xl font-black text-slate-800" />
                                     </div>
-                                    <div className="pt-6 space-y-3">
+                                    <div>
+                                        <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-wide">Durée initiale du contrat</label>
+                                        <select
+                                            value={contractDuration}
+                                            onChange={(e) => setContractDuration(parseInt(e.target.value))}
+                                            className="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-emerald-500 outline-none text-lg font-bold text-slate-800"
+                                        >
+                                            <option value={1}>1 Saison (jusqu'au 10 Octobre)</option>
+                                            <option value={2}>2 Saisons (jusqu'au 10 Octobre de l'année suivante)</option>
+                                        </select>
+                                    </div>
+                                    <div className="pt-3 space-y-3">
                                         <button onClick={() => setSaleStep(2)} disabled={!selectedProduct || !amount} className="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl shadow-xl hover:bg-emerald-700 disabled:opacity-30">Étape suivante : Contrat</button>
                                         <button onClick={closeModale} className="w-full py-4 text-slate-400 font-bold">Abandonner</button>
                                     </div>

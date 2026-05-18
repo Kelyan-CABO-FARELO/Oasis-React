@@ -44,8 +44,9 @@ const AuthContextProvider = ({children}) => {
             localStorage.removeItem(USER_INFOS);
             localStorage.removeItem(TOKEN_KEY);
 
-            // Redirige proprement vers la page d'accueil pour éviter les erreurs de route persistante
-            if (window.location.pathname !== '/') {
+            // Redirige proprement vers la page d'accueil uniquement si l'utilisateur était sur une route protégée
+            const isProtectedRoute = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/owner');
+            if (isProtectedRoute) {
                 window.location.href = '/';
             }
         } catch (error) {
