@@ -84,7 +84,7 @@ const OwnerRequests = () => {
         try {
             const dataUsers = await apiFetch('/users?pagination=false');
             const allUsers = dataUsers['hydra:member'] || dataUsers.member || (Array.isArray(dataUsers) ? dataUsers : []);
-            const filtered = allUsers.filter(u => Boolean(u.wantsToBecomeOwner) && !u.isOwner);
+            const filtered = allUsers.filter(u => Boolean(u.wantsToBecomeOwner));
             setProspects(filtered);
 
             const dataProducts = await apiFetch('/products?pagination=false');
@@ -115,10 +115,10 @@ const OwnerRequests = () => {
         if (!product.prices || product.prices.length === 0) return '';
         const nightlyPriceEuro = product.prices[0].price / 100;
         const title = product.title.toLowerCase();
-        let multiplier = 1000;
-        if (title.includes('mobilehome') || title.includes('mobile')) multiplier = 1500;
-        else if (title.includes('caravane')) multiplier = 600;
-        else if (title.includes('emplacement')) multiplier = 800;
+        let multiplier = 100; // Multiplicateur de base pour la saison
+        if (title.includes('mobilehome') || title.includes('mobile')) multiplier = 150;
+        else if (title.includes('caravane')) multiplier = 80;
+        else if (title.includes('emplacement')) multiplier = 100;
         return Math.round(nightlyPriceEuro * multiplier);
     };
 
@@ -176,7 +176,14 @@ const OwnerRequests = () => {
                 {prospects.length > 0 ? prospects.map(user => (
                     <div key={user.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center hover:border-emerald-200 transition-all group">
                         <div>
-                            <h4 className="font-bold text-lg text-slate-800">{user.firstname} {user.lastname}</h4>
+                            <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-bold text-lg text-slate-800">{user.firstname} {user.lastname}</h4>
+                                {user.isOwner && (
+                                    <span className="bg-blue-100 text-blue-700 text-xs font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                        Déjà Propriétaire
+                                    </span>
+                                )}
+                            </div>
                             <p className="text-sm text-slate-500">{user.email} • {user.mobile || 'Pas de téléphone'}</p>
                         </div>
                         <div className="flex gap-3">

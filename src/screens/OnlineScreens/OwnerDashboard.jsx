@@ -186,8 +186,13 @@ const OwnerDashboard = () => {
     const calculateContractDetails = (startDateString) => {
         if (!startDateString) return null;
         const start = new Date(startDateString);
-        const end = new Date(start);
-        end.setFullYear(end.getFullYear() + 1);
+        let end = new Date(start.getFullYear(), 9, 10); // 10 Octobre (months are 0-indexed, so 9 is October)
+        
+        // Si le contrat démarre après le 10 octobre, la saison de validité est celle de l'année suivante
+        if (start > end) {
+            end.setFullYear(end.getFullYear() + 1);
+        }
+        
         const today = new Date();
         const totalDays = (end - start) / (1000 * 60 * 60 * 24);
         const daysPassed = (today - start) / (1000 * 60 * 60 * 24);
