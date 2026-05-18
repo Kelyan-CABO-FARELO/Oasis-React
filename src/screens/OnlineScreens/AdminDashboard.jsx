@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReservationList from '../../components/Admin/ReservationList.jsx';
 import UserList from '../../components/Admin/UserList.jsx';
-import CampingMap from '../../components/Map/CampingMap.jsx';
+import CampingMapProduct from '../../components/Map/CampingMapProduct.jsx';
 import InvoiceList from '../../components/Admin/InvoiceList.jsx';
 import { productService } from '../../services/productService.js';
 import { useAuthContext } from '../../contexts/AuthContext.jsx';
@@ -121,14 +121,14 @@ const AdminDashboard = () => {
                     {activeTab === 'invoices' && <InvoiceList />}
 
                     {activeTab === 'map' && (
-                        <div className="bg-white rounded-[2rem] shadow-xl shadow-amber-900/5 border border-amber-50 p-2 overflow-hidden h-[750px] relative">
+                        <div className="max-w-5xl mx-auto">
                             {loadingMap ? (
-                                <div className="flex flex-col items-center justify-center h-full gap-4 text-amber-600 animate-pulse">
+                                <div className="bg-white rounded-[2rem] shadow-xl border border-amber-50 p-12 flex flex-col items-center justify-center min-h-[400px] gap-4 text-amber-600 animate-pulse">
                                     <span className="text-5xl">🗺️</span>
                                     <p className="font-bold text-lg">Analyse du terrain en cours...</p>
                                 </div>
                             ) : (
-                                <CampingMap
+                                <CampingMapProduct
                                     isAdmin={true}
                                     allProducts={allProducts}
                                     availableProducts={availableProducts}

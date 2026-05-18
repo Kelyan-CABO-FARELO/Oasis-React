@@ -85,7 +85,19 @@ const CampingMap = ({
             else if (selectedCategory === 'caravane' && title.startsWith('caravane')) matchesCategory = true;
             else if (selectedCategory === 'emplacement' && title.startsWith('emplacement')) matchesCategory = true;
 
-            // 🛑 LOGIQUE D'AFFICHAGE VISUEL
+            // 🛑 LOGIQUE D'AFFICHAGE VISUEL (Simplifiée pour l'admin)
+            if (isAdmin) {
+                el.style.opacity = "1";
+                el.style.cursor = "default";
+                el.style.pointerEvents = "none";
+                if (isAvailable) {
+                    el.style.fill = "#10B981"; // Vert libre
+                } else {
+                    el.style.fill = "#EF4444"; // Rouge réservé
+                }
+                return;
+            }
+
             if (isClosed) {
                 el.style.fill = "#cbd5e1";
                 el.style.opacity = "0.4";
@@ -368,13 +380,20 @@ const CampingMap = ({
             </div>
 
             {/* LÉGEND */}
-            <div className="flex justify-center gap-4 md:gap-6 mt-8 text-sm font-bold text-slate-600 flex-wrap">
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-blue-500"></span> 2 à 3 pers.</span>
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-emerald-500"></span> 4 pers.</span>
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-amber-500"></span> 5 pers.</span>
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-purple-500"></span> 6 à 8 pers.</span>
-                <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-red-500"></span> Loué / Réservé</span>
-            </div>
+            {isAdmin ? (
+                <div className="flex justify-center gap-6 mt-8 text-sm font-bold text-slate-600 flex-wrap">
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-emerald-500"></span> Libre / Disponible</span>
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-red-500"></span> Occupé / Réservé</span>
+                </div>
+            ) : (
+                <div className="flex justify-center gap-4 md:gap-6 mt-8 text-sm font-bold text-slate-600 flex-wrap">
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-blue-500"></span> 2 à 3 pers.</span>
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-emerald-500"></span> 4 pers.</span>
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-amber-500"></span> 5 pers.</span>
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-purple-500"></span> 6 à 8 pers.</span>
+                    <span className="flex items-center gap-2"><span className="w-4 h-4 rounded-full bg-red-500"></span> Loué / Réservé</span>
+                </div>
+            )}
         </div>
     );
 };
