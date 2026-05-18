@@ -43,6 +43,11 @@ const AuthContextProvider = ({children}) => {
 
             localStorage.removeItem(USER_INFOS);
             localStorage.removeItem(TOKEN_KEY);
+
+            // Redirige proprement vers la page d'accueil pour éviter les erreurs de route persistante
+            if (window.location.pathname !== '/') {
+                window.location.href = '/';
+            }
         } catch (error) {
             throw new Error(`Erreur lors de la déconnexion: ${error}`);
         }
