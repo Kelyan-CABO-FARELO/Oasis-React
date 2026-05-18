@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #fffdf0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 15px; border: 1px solid #fef3c7; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #f59e0b; font-size: 24px; text-align: center; }
+        .details { background-color: #f8fafc; padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #10b981; }
+        /* 👇 Style du bouton magique */
+        .btn-magic { display: block; width: max-content; margin: 30px auto; padding: 15px 30px; background-color: #10b981; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 10px; text-align: center; }
+        .footer { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 30px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Paiement validé ! 🎉</h1>
+    <p>Bonjour <strong>{{ user.firstname }}</strong>,</p>
+    <p>Nous vous confirmons la bonne réception de votre paiement. Votre séjour au <strong>Domaine L'Oasis</strong> est désormais réservé !</p>
+
+    <div class="details">
+        <p><strong>Référence de réservation :</strong> #{{ reservation.id }}</p>
+        <p><strong>Date d'arrivée :</strong> {{ reservation.startDate|date("d/m/Y") }}</p>
+        <p><strong>Date de départ :</strong> {{ reservation.endDate|date("d/m/Y") }}</p>
+        <p><strong>Voyageurs :</strong> {{ reservation.nbAdult }} Adulte(s) et {{ reservation.nbChildren }} Enfant(s)</p>
+    </div>
+
+    <p>Pour consulter le détail de votre séjour ou ajouter des options (comme l'accès piscine), utilisez votre accès direct sécurisé :</p>
+
+    {# 👇 LE BOUTON MAGIQUE #}
+    <a href="http://localhost:5173/manage-booking/{{ reservation.id }}?token={{ reservation.managementToken }}" class="btn-magic">
+        Gérer ma réservation
+    </a>
+
+    <p>Toute l'équipe a hâte de vous accueillir sous le soleil du sud ! ☀️</p>
+
+    <div class="footer">
+        <p>Camping L'Oasis *** - Cet email est généré automatiquement. Ne partagez pas ce lien, il est personnel.</p>
+    </div>
+</div>
+</body>
+</html>

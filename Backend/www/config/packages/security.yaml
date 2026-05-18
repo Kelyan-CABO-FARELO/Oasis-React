@@ -1,0 +1,83 @@
+security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            # Ensure dev tools and static assets are always allowed
+            pattern: ^/(_profiler|_wdt|assets|build)/
+            security: false
+
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
+
+        main:
+            lazy: true
+            provider: app_user_provider
+
+            # Activate different ways to authenticate:
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Note: Only the *first* matching rule is applied
+    access_control:
+        # On autorise la connexion
+        - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
+
+        - { path: ^/api/set-new-password, roles: PUBLIC_ACCESS }
+
+        # On autorise l'inscription (POST)
+        - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [ POST ] }
+
+        # LES LIGNES POUR DÉBLOQUER SWAGGER :
+        - { path: ^/api$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+        - { path: ^/api/contexts, roles: PUBLIC_ACCESS }
+
+        # Autoriser le public à voir les produits (GET uniquement)
+        - { path: ^/api/products, roles: PUBLIC_ACCESS, methods: [ GET ] }
+
+        # Autoriser la création de réservation invité
+        - { path: ^/api/guest-checkout, roles: PUBLIC_ACCESS }
+
+        # On autorise le lien magique
+        - { path: ^/api/manage-booking, roles: PUBLIC_ACCESS }
+
+        # On autorise la demande de proprio
+        - { path: ^/api/submit-owner-request, roles: PUBLIC_ACCESS }
+
+        # --- LE VERROUILLAGE GLOBAL À LA TOUTE FIN ---
+        # On verrouille TOUT le reste de l'API (doit toujours être en dernier)
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+when@test:
+    security:
+        password_hashers:
+            # Password hashers are resource-intensive by design to ensure security.
+            # In tests, it's safe to reduce their cost to improve performance.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Facture {{ invoice.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .details { margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f8f9fa; }
+        .total { text-align: right; font-weight: bold; font-size: 1.2em; padding-top: 20px; }
+        .footer { position: absolute; bottom: 30px; width: 100%; text-align: center; font-size: 12px; color: #777; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    {% if 'FA-RENEW-' in invoice.title|upper %}
+        <h1>RENOUVELLEMENT DE CONTRAT</h1>
+        <h2>Prolongation de Partenariat Propriétaire</h2>
+    {% elseif 'AV-CANCEL-' in invoice.title|upper %}
+        <h1 style="color: #dc2626;">AVOIR D'ANNULATION</h1>
+        <h2>Remboursement de Séjour Client</h2>
+    {% elseif not (invoice.title|upper starts with 'FA-') %}
+        <h1>FACTURE DE RÉTRIBUTION</h1>
+        <h2>Versement Propriétaire - Fin de Saison</h2>
+    {% else %}
+        <h1>FACTURE</h1>
+        {% if reservation %}
+            <h2>Séjour du {{ reservation.startDate|date('d/m/Y') }} au {{ reservation.endDate|date('d/m/Y') }}</h2>
+        {% else %}
+            <h2>Achat de Résidence / Parcelle</h2>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="details">
+    <p><strong>Facture N° :</strong> {{ invoice.title }}</p>
+    <p><strong>Date :</strong> {{ invoice.createdAt|date('d/m/Y') }}</p>
+    <p><strong>Client :</strong> {{ invoice.person }}</p>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Désignation</th>
+        <th style="text-align: right;">Prix TTC</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set total = 0 %}
+    {% for line in invoice.lineInvoices %}
+        <tr>
+            <td>{{ line.lineProduct }}</td>
+            <td style="text-align: right;">{{ (line.linePrice / 100)|number_format(2, ',', ' ') }} €</td>
+        </tr>
+        {% set total = total + line.linePrice %}
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="total">
+    TOTAL : {{ (total / 100)|number_format(2, ',', ' ') }} €
+</div>
+
+<div class="footer">
+    {% if 'FA-RENEW-' in invoice.title|upper %}
+        Merci pour votre confiance et votre fidélité renouvelée au Domaine L'Oasis.
+    {% elseif 'AV-CANCEL-' in invoice.title|upper %}
+        Avoir d'annulation de séjour. Remboursement effectué sur votre compte bancaire.
+    {% elseif not (invoice.title|upper starts with 'FA-') %}
+        Rétribution effectuée en fin de saison conformément aux conditions de partenariat.
+    {% else %}
+        Merci pour votre réservation. Le camping vous attend avec impatience !
+    {% endif %}
+</div>
+
+</body>
+</html>

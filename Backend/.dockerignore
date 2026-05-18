@@ -1,0 +1,55 @@
+# Fichiers et dossiers à exclure du contexte de build Docker
+# Réduit la taille du contexte et accélère le build
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker
+docker-compose.yml
+.dockerignore
+
+# Fichiers de développement
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Fichiers temporaires
+tmp/
+temp/
+*.tmp
+
+# Node modules (si présents)
+node_modules/
+npm-debug.log
+
+# Fichiers de sauvegarde
+*.sql
+*.dump
+*.bak
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers sensibles
+.env
+.env.local
+*.pem
+*.key
+
+# Scripts shell (non nécessaires dans l'image)
+*.sh
+aliases.sh
+

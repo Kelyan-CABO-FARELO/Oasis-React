@@ -1,0 +1,29 @@
+{# templates/email/owner_welcome.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; color: #334155; line-height: 1.6;">
+<div style="max-w-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
+    <h2 style="color: #059669;">Félicitations {{ user.firstname }} ! 🎉</h2>
+
+    <p>C'est officiel ! Le paiement de votre acquisition a bien été validé.</p>
+
+    <p>Toute l'équipe du <strong>Domaine L'Oasis</strong> est extrêmement fière de vous compter parmi nos nouveaux propriétaires. Vous pouvez dès à présent profiter de votre bien et de toutes les infrastructures du domaine.</p>
+
+    <p>Vous pouvez dès maintenant configurer votre compte ci-dessous</p>
+
+    <a href="http://localhost:5173/password?token={{ user.resetToken }}" style="display: inline-block; padding: 10px 20px; background-color: #059669; color: white; text-decoration: none; border-radius: 5px;">
+        Créer mon mot de passe
+    </a>
+
+    <p>Vous trouverez en pièce jointe de cet e-mail <strong>votre facture d'achat officielle</strong> acquittée.</p>
+
+    <p>Si vous avez la moindre question pour votre installation, n'hésitez pas à passer nous voir à l'accueil.</p>
+
+    <p>À très vite au domaine ! ☀️</p>
+    <p><em>La Direction de L'Oasis</em></p>
+</div>
+</body>
+</html>

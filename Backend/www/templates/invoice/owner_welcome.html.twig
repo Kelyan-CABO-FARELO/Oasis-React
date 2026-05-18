@@ -1,0 +1,50 @@
+{# templates/emails/owner_welcome.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9fbf9; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .header { background-color: #064e3b; color: #ffffff; padding: 40px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 900; }
+        .content { padding: 40px 30px; color: #334155; line-height: 1.6; }
+        .content h2 { color: #064e3b; font-size: 22px; margin-top: 0; }
+        .card { background-color: #f0fdf4; border: 1px solid #dcfce7; padding: 20px; border-radius: 12px; margin: 25px 0; }
+        .footer { background-color: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8; }
+        .btn { display: inline-block; padding: 14px 28px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Domaine L'Oasis<span>.</span></h1>
+    </div>
+
+    <div class="content">
+        <h2>Félicitations {{ user.firstname }} ! 🥂</h2>
+        <p>Nous sommes ravis de vous compter officiellement parmi les propriétaires du <strong>Domaine L'Oasis</strong>.</p>
+
+        <p>L'acte de vente a été finalisé avec succès. Vous disposez désormais de votre propre pied-à-terre au cœur de la nature.</p>
+
+        <div class="card">
+            <strong>Récapitulatif de votre achat :</strong><br>
+            • Facture : {{ invoice.title }}<br>
+            • Date : {{ invoice.createdAt|date('d/m/Y') }}<br>
+            • Propriétaire : {{ user.firstname }} {{ user.lastname }}
+        </div>
+
+        <p>Vous trouverez votre <strong>facture d'achat en pièce jointe</strong> de cet e-mail au format PDF.</p>
+
+        <p>Notre équipe reste à votre entière disposition pour organiser la remise de vos clés et vous accompagner dans votre installation.</p>
+
+        <a href="mailto:contact@loasis.com" class="btn">Contacter mon conseiller</a>
+    </div>
+
+    <div class="footer">
+        &copy; {{ "now"|date("Y") }} Domaine L'Oasis - Tous droits réservés.<br>
+        Ceci est un message automatique, merci de ne pas y répondre directement.
+    </div>
+</div>
+</body>
+</html>

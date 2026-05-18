@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; color: #334155; line-height: 1.6;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
+    <h2 style="color: #dc2626;">Confirmation d'annulation 🔴</h2>
+
+    <p>Bonjour {{ user.firstname }},</p>
+
+    <p>Nous vous confirmons que votre demande d'annulation pour le séjour n°<strong>{{ reservation.id }}</strong> a bien été prise en compte et traitée.</p>
+
+    <p>Le séjour était prévu du <strong>{{ reservation.startDate|date('d/m/Y') }}</strong> au <strong>{{ reservation.endDate|date('d/m/Y') }}</strong>.</p>
+
+    {% if avoir %}
+        <p>Conformément à nos conditions générales de vente, nous avons émis un **Avoir d'annulation (Credit Note)**.</p>
+        <p>Vous trouverez cet avoir officiel acquitté en pièce jointe de cet e-mail (Réf: <strong>{{ avoir.title }}</strong>).</p>
+        <p>Le remboursement de votre séjour a été ordonné sur la carte bancaire ayant servi au paiement.</p>
+    {% endif %}
+
+    <p>Nous regrettons de ne pas vous accueillir cette fois-ci, mais nous espérons avoir le plaisir de vous revoir très bientôt parmi nous.</p>
+
+    <p>À bientôt au Domaine ! ☀️</p>
+    <p><em>La Direction de L'Oasis</em></p>
+</div>
+</body>
+</html>

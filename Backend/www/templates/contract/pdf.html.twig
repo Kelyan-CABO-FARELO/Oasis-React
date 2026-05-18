@@ -1,0 +1,67 @@
+{# templates/contract/pdf.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Times New Roman', serif; color: #000; line-height: 1.5; margin: 40px; }
+        h1 { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; font-size: 24px; text-transform: uppercase; }
+        h2 { font-size: 18px; margin-top: 30px; text-decoration: underline; }
+        .section { margin-bottom: 20px; }
+        .box { border: 1px solid #000; padding: 15px; background-color: #f9f9f9; }
+        .signatures { margin-top: 50px; width: 100%; display: table; }
+        .signature-box { display: table-cell; width: 50%; text-align: center; }
+        .signature-space { height: 100px; border-bottom: 1px dotted #000; margin: 20px 40px; }
+    </style>
+</head>
+<body>
+
+<h1>Contrat de Vente & Règlement Intérieur</h1>
+<p style="text-align: right;">Fait le {{ date|date('d/m/Y') }}</p>
+
+<div class="section">
+    <h2>ENTRE LES SOUSSIGNÉS :</h2>
+    <p><strong>LE DOMAINE L'OASIS</strong><br>
+        Représenté par la Direction.<br>
+        Ci-après dénommé "Le Vendeur",</p>
+
+    <p>ET</p>
+
+    <p><strong>M./Mme {{ user.firstname }} {{ user.lastname }}</strong><br>
+        Email : {{ user.email }}<br>
+        Téléphone : {{ user.mobile | default('Non renseigné') }}<br>
+        Ci-après dénommé "L'Acquéreur".</p>
+</div>
+
+<div class="section box">
+    <h2>OBJET DU CONTRAT :</h2>
+    <p>Le Vendeur cède à l'Acquéreur les droits sur le bien suivant :</p>
+    <ul>
+        <li><strong>Désignation du bien :</strong> {{ product.title }}</li>
+        <li><strong>Prix de vente convenu :</strong> {{ amount }} € TTC</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>CONDITIONS GÉNÉRALES & RÈGLEMENT :</h2>
+    <p>1. L'Acquéreur reconnaît avoir visité le bien et l'accepter dans l'état où il se trouve.</p>
+    <p>2. L'Acquéreur s'engage à respecter scrupuleusement le règlement intérieur du Domaine L'Oasis, notamment concernant les nuisances sonores et l'utilisation de l'Espace Aquatique.</p>
+    <p>3. La présente vente ne sera considérée comme définitive qu'après encaissement effectif de la somme de {{ amount }} €.</p>
+    <p>4. Toute sous-location du bien devra faire l'objet d'un accord avec la Direction du Domaine.</p>
+</div>
+
+<div class="signatures">
+    <div class="signature-box">
+        <strong>LE VENDEUR</strong><br>
+        <em>(Signature et cachet)</em>
+        <div class="signature-space"></div>
+    </div>
+    <div class="signature-box">
+        <strong>L'ACQUÉREUR</strong><br>
+        <em>(Lu et approuvé, signature)</em>
+        <div class="signature-space"></div>
+    </div>
+</div>
+
+</body>
+</html>

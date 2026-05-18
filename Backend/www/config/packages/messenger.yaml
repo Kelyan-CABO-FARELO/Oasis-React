@@ -1,0 +1,19 @@
+framework:
+    messenger:
+        # La file d'attente en cas d'erreur
+        failure_transport: failed
+
+        transports:
+            # C'EST ICI QU'ON CRÉE LE FAMEUX "async" !
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    use_notify: true
+                    check_delayed_interval: 60000
+            failed: 'doctrine://default?queue_name=failed'
+
+        routing:
+            # On dit à Symfony : "Quand tu vois ce message, envoie-le dans la file async"
+            'App\Message\ProcessOwnerSaleMessage': async
+            # Bonus : on rend aussi l'envoi d'e-mails asynchrone par défaut !
+            'Symfony\Component\Mailer\Messenger\SendEmailMessage': async

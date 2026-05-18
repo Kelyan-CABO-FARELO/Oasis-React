@@ -1,0 +1,15 @@
+RewriteEngine On
+
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+CGIPassAuth On
+
+# Rediriger toutes les requêtes vers index.php sauf les fichiers existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Sécurité : Empêcher l'accès aux fichiers sensibles (syntaxe Apache 2.4)
+<FilesMatch "\.(env|log|ini|conf)$">
+    Require all denied
+</FilesMatch>
+

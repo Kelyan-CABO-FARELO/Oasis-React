@@ -1,0 +1,2 @@
+ERREUR STRIPE : Neither the property "startAt" nor one of the methods "startAt()", "getstartAt()", "isstartAt()", "hasstartAt()" or "__call()" exist and have public access in class "App\Entity\Invoice" in "invoice/pdf.html.twig" at line 21.
+Fichier : /var/www/html/templates/invoice/pdf.html.twig (Ligne 21)
