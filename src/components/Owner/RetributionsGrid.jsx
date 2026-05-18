@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_ROOT } from '../../constants/apiConstant.js';
 
 const RetributionsGrid = ({ products, pendingEarnings, invoices }) => {
     return (
@@ -94,14 +95,28 @@ const RetributionsGrid = ({ products, pendingEarnings, invoices }) => {
                                                             onClick={() => {
                                                                 const today = new Date();
                                                                 const currentYear = today.getFullYear();
-                                                                const endOfSeasonDate = new Date(`${currentYear}-10-10T00:00:00`);
+                                                                const invoiceYear = new Date(invoice.createdAt).getFullYear();
                                                                 
-                                                                if (today < endOfSeasonDate) {
-                                                                    alert("🔒 Les factures de rétribution ne sont téléchargeables qu'en fin de saison (à partir du 10 Octobre).");
-                                                                    return;
+                                                                if (invoiceYear === currentYear) {
+                                                                    const endOfSeasonDate = new Date(`${currentYear}-10-10T00:00:00`);
+                                                                    if (today < endOfSeasonDate) {
+                                                                        alert("🔒 Les factures de rétribution ne sont téléchargeables qu'en fin de saison (à partir du 10 Octobre).");
+                                                                        return;
+                                                                    }
                                                                 }
-                                                                window.open(invoice.path, '_blank');
-                                                            }} 
+                                                                
+                                                                // Utiliser API_ROOT pour cibler le bon serveur backend !
+                                                                const fileUrl = `${API_ROOT}${invoice.path}`;
+                                                                
+                                                                // Déclencher le téléchargement direct du PDF
+                                                                const link = document.createElement('a');
+                                                                link.href = fileUrl;
+                                                                link.setAttribute('download', `${invoice.title}.pdf`);
+                                                                link.setAttribute('target', '_blank');
+                                                                document.body.appendChild(link);
+                                                                link.click();
+                                                                document.body.removeChild(link);
+                                                            }}
                                                             disabled={!invoice.path || invoice.path === 'generation_en_attente'} 
                                                             className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors disabled:opacity-30 text-xs" 
                                                             title="Télécharger la facture (Disponible à partir du 10 Octobre)"

@@ -42,8 +42,11 @@ const UserList = () => {
                     throw new Error("Format de données inattendu.");
                 }
 
+                // On filtre pour exclure les comptes anonymisés RGPD (ceux dont l'email commence par 'anonyme_')
+                const activeUsers = list.filter(user => !(user.email || '').startsWith('anonyme_'));
+
                 // On trie par les plus récents (ID le plus grand)
-                const sortedList = [...list].sort((a, b) => b.id - a.id);
+                const sortedList = [...activeUsers].sort((a, b) => b.id - a.id);
                 setUsers(sortedList);
 
             } catch (err) {
