@@ -1,16 +1,95 @@
-# React + Vite
+# 🏕️ Domaine L'Oasis - Plateforme de Réservation & Gestion
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Une application web complète (React & Symfony) développée pour répondre au cahier des charges du Domaine L'Oasis, un prestigieux camping 3 étoiles situé entre la Mer Méditerranée et les Pyrénées.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Fonctionnalités Principales
 
-## React Compiler
+L'application est divisée en **3 espaces distincts** répondant à des contraintes métiers précises :
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. 🌍 Espace Public (Réservations)
+- **Ouverture Saisonnière :** Les réservations sont strictement limitées à la période d'ouverture du camping (05 Mai au 10 Octobre).
+- **Tarification Dynamique :** 
+  - Majoration automatique de **15% en Haute Saison** (21 Juin - 31 Août).
+  - Remise automatique de **5% par tranche de 7 jours** loués (plafonnée à 25%).
+- **Taxes & Extras :** Calcul automatique de la taxe de séjour (selon l'âge) et option de facturation de l'accès à l'espace aquatique (par personne et par jour).
+- **Paiement Sécurisé :** Intégration complète de l'API **Stripe** pour les paiements en ligne.
 
-## Expanding the ESLint configuration
+### 2. 👑 Espace Administrateur (Gestion & Comptabilité)
+- **Dashboard Global :** Vue d'ensemble des réservations, des paiements et occupation du parc de 90 biens.
+- **Grille Tarifaire Dynamique :** Interface intuitive permettant de modifier le prix de base d'un "type" de bien, répercutant automatiquement le prix sur l'ensemble du parc.
+- **Facturation Légale :** Édition de factures PDF et génération automatique **d'Avoirs (AV-CANCEL)** en cas d'annulation.
+- **Conformité RGPD Avancée :**
+  - Outil de purge automatique/anonymisation des locataires après 1 semaine (ou 1 an avec consentement).
+  - Alertes pour l'archivage obligatoire des factures datant de plus de 3 ans.
+  - Anonymisation complète des propriétaires 1 an après la fin de leur contrat.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 3. 🏡 Espace Propriétaire
+- **Suivi d'Occupation :** Calendrier personnalisé pour surveiller l'occupation de son propre bien.
+- **Rétributions Automatisées :** Un script métier (`app:owner:generate-retributions`) génère automatiquement, en fin de saison, la facture de versement du propriétaire, correspondant très exactement à **35% du montant brut** de chaque location (Taxes de séjour et Piscine déduites).
+
+---
+
+## 🛠️ Architecture Technique
+
+- **Frontend :** React 18, Vite, React Router, TailwindCSS.
+- **Backend :** Symfony 7, API Platform, PHP 8.2, MySQL/MariaDB.
+- **Génération PDF :** Dompdf (via Twig).
+- **Infrastructure :** Conteneurisation complète avec Docker & Docker Compose.
+
+---
+
+## 🚀 Installation & Lancement Rapide (100% Docker)
+
+L'application est conçue pour démarrer **sur une machine vierge possédant uniquement Docker** (aucun prérequis Node.js ou PHP n'est nécessaire sur la machine hôte).
+
+Un script `start.sh` automatisé s'occupe de construire l'environnement, installer les dépendances et exécuter les migrations de base de données.
+
+### Étape 1 : Cloner le dépôt et lancer le script
+
+```bash
+git clone https://github.com/Kelyan-CABO-FARELO/Oasis-React.git
+cd Oasis-React
+
+# Rendre le script exécutable
+chmod +x start.sh
+
+# Lancer la magie Docker 🐳
+./start.sh
+```
+
+### Étape 2 : Accéder à l'application
+
+Une fois le script terminé, l'application est prête à l'emploi :
+
+- **🖥️ Application Publique (Frontend) :** [http://localhost:5173](http://localhost:5173)
+- **⚙️ Backend API (Symfony) :** [http://localhost:8088/api](http://localhost:8088/api)
+
+> *Note : Le Frontend est lancé dans un container Node.js éphémère. Si vous fermez le terminal, le frontend pourrait s'arrêter. Vous pouvez le relancer en exécutant à nouveau le script.*
+
+---
+
+## 🧑‍💻 Comptes de Démonstration (Fixtures)
+
+La base de données est initialisée avec de faux utilisateurs pour vous permettre de tester les différents espaces sécurisés :
+
+- **Administrateur :** `admin@loasis.com` / Mdp : `password`
+- **Propriétaire :** `owner_1@loasis.com` / Mdp : `password`
+- **Client standard :** `user_1@loasis.com` / Mdp : `password`
+
+---
+
+## 💳 Tester les Webhooks Stripe (Local)
+
+Si vous souhaitez tester le cycle complet de réservation avec le paiement (et voir les factures passer du statut "En attente" à "Payé"), vous devez utiliser la [Stripe CLI](https://stripe.com/docs/stripe-cli) pour transférer les événements de paiement locaux vers le Backend.
+
+```bash
+# Dans un terminal séparé
+stripe listen --forward-to localhost:8088/webhook/stripe
+```
+
+Assurez-vous également que vos clés Stripe sont correctement configurées dans le fichier `Backend/www/.env.local`.
+
+---
+*Projet réalisé dans le cadre de la certification.*

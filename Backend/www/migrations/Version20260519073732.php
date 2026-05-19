@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260417100002 extends AbstractMigration
+final class Version20260519073732 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,7 +25,7 @@ final class Version20260417100002 extends AbstractMigration
         $this->addSql('CREATE TABLE media (id INT AUTO_INCREMENT NOT NULL, path VARCHAR(255) DEFAULT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE media_product (media_id INT NOT NULL, product_id INT NOT NULL, INDEX IDX_B29D82E4EA9FDD75 (media_id), INDEX IDX_B29D82E44584665A (product_id), PRIMARY KEY (media_id, product_id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE price (id INT AUTO_INCREMENT NOT NULL, price INT NOT NULL, product_id INT DEFAULT NULL, INDEX IDX_CAC822D94584665A (product_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE product (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(200) NOT NULL, description LONGTEXT DEFAULT NULL, duration INT DEFAULT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE product (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(200) NOT NULL, description LONGTEXT DEFAULT NULL, duration INT DEFAULT NULL, contract_date DATETIME DEFAULT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE product_user (product_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_7BF4E84584665A (product_id), INDEX IDX_7BF4E8A76ED395 (user_id), PRIMARY KEY (product_id, user_id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE product_reservation (product_id INT NOT NULL, reservation_id INT NOT NULL, INDEX IDX_EEE7D74A4584665A (product_id), INDEX IDX_EEE7D74AB83297E7 (reservation_id), PRIMARY KEY (product_id, reservation_id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, start_date DATETIME NOT NULL, end_date DATETIME NOT NULL, nb_children INT NOT NULL, nb_adult INT NOT NULL, is_paid TINYINT NOT NULL, management_token VARCHAR(255) DEFAULT NULL, pool_days INT DEFAULT NULL, user_id INT DEFAULT NULL, invoice_id INT DEFAULT NULL, INDEX IDX_42C84955A76ED395 (user_id), UNIQUE INDEX UNIQ_42C849552989F1FD (invoice_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
