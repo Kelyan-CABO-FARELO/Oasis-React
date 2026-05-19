@@ -11,6 +11,7 @@ const UserList = () => {
 
     // État pour la recherche
     const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState('ALL');
 
     // États pour la pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -59,13 +60,20 @@ const UserList = () => {
         fetchUsers();
     }, []);
 
-    // Réinitialisation de la page si on fait une recherche
+    // Réinitialisation de la page si on fait une recherche ou on filtre
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, roleFilter]);
 
-    // Filtrage (Recherche par nom, prénom ou email)
+    // Filtrage (Recherche par nom, prénom ou email, et filtre par rôle)
     const filteredUsers = users.filter((user) => {
+        const isAdmin = user.roles && user.roles.includes('ROLE_ADMIN');
+        const isOwner = user.roles && user.roles.includes('ROLE_OWNER');
+        
+        if (roleFilter === 'ADMIN' && !isAdmin) return false;
+        if (roleFilter === 'OWNER' && !isOwner) return false;
+        if (roleFilter === 'USER' && (isAdmin || isOwner)) return false;
+
         if (!searchTerm) return true;
 
         const searchLower = searchTerm.toLowerCase();
@@ -90,23 +98,35 @@ const UserList = () => {
     return (
         <div className="relative">
 
-            {/* 🔍 BARRE DE RECHERCHE */}
-            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between gap-4">
-                <div className="relative w-full max-w-md">
-                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-lg">🔍</span>
-                    <input
-                        type="text"
-                        placeholder="Rechercher par nom ou email..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-indigo-400 bg-slate-50 transition-colors font-medium text-slate-700"
-                    />
-                </div>
-                {searchTerm && (
-                    <div className="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-lg">
-                        {filteredUsers.length} résultat(s)
+            {/* 🔍 BARRE DE RECHERCHE & FILTRES */}
+            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col md:flex-row w-full gap-4 max-w-2xl">
+                    <div className="relative w-full">
+                        <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-lg">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Rechercher par nom ou email..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-indigo-400 bg-slate-50 transition-colors font-medium text-slate-700"
+                        />
                     </div>
-                )}
+                    
+                    <select
+                        value={roleFilter}
+                        onChange={(e) => setRoleFilter(e.target.value)}
+                        className="py-3 px-4 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-indigo-400 bg-slate-50 transition-colors font-bold text-slate-700 min-w-[200px]"
+                    >
+                        <option value="ALL">Tous les rôles</option>
+                        <option value="USER">Clients</option>
+                        <option value="OWNER">Propriétaires</option>
+                        <option value="ADMIN">Administrateurs</option>
+                    </select>
+                </div>
+
+                <div className="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-lg whitespace-nowrap">
+                    {filteredUsers.length} résultat(s)
+                </div>
             </div>
 
             {/* 📋 LE TABLEAU */}

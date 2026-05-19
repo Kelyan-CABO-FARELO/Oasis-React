@@ -9,8 +9,10 @@ const ReservationList = () => {
     const [error, setError] = useState(null);
     const [selectedReservation, setSelectedReservation] = useState(null);
 
-    // 👇 NOUVEL ÉTAT : Le terme recherché dans la barre
+    // 👇 NOUVEAUX ÉTATS : Le terme recherché et les filtres
     const [searchTerm, setSearchTerm] = useState('');
+    const [paymentFilter, setPaymentFilter] = useState('ALL');
+    const [statusFilter, setStatusFilter] = useState('ALL');
 
     // États pour la pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,13 +57,29 @@ const ReservationList = () => {
         fetchReservations();
     }, []);
 
-    // 👇 RÉINITIALISATION : On retourne à la page 1 si on fait une nouvelle recherche
+    // 👇 RÉINITIALISATION : On retourne à la page 1 si on fait une nouvelle recherche ou un nouveau filtre
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, paymentFilter, statusFilter]);
 
-    // 👇 LOGIQUE DE FILTRAGE (Recherche par nom ou prénom)
+    // 👇 LOGIQUE DE FILTRAGE (Recherche et filtres combinés)
     const filteredReservations = reservations.filter((res) => {
+        const estPaye = res.isPaid === true || res.paid === true;
+
+        if (paymentFilter === 'PAID' && !estPaye) return false;
+        if (paymentFilter === 'PENDING' && estPaye) return false;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const start = new Date(res.startDate);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(res.endDate);
+        end.setHours(23, 59, 59, 999);
+
+        if (statusFilter === 'UPCOMING' && today >= start) return false;
+        if (statusFilter === 'ONGOING' && (today < start || today > end)) return false;
+        if (statusFilter === 'COMPLETED' && today <= end) return false;
+
         if (!searchTerm) return true; // Si la barre est vide, on garde tout
 
         const fullName = res.user ? `${res.user.firstname} ${res.user.lastname}`.toLowerCase() : 'invité';
@@ -89,26 +107,48 @@ const ReservationList = () => {
         <div className="relative">
 
             {/* ========================================= */}
-            {/* 🔍 BARRE DE RECHERCHE */}
+            {/* 🔍 BARRE DE RECHERCHE ET FILTRES */}
             {/* ========================================= */}
-            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between gap-4">
-                <div className="relative w-full max-w-md">
-                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-lg">
-                        🔍
-                    </span>
-                    <input
-                        type="text"
-                        placeholder="Rechercher par nom de client..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-amber-400 bg-slate-50 transition-colors font-medium text-slate-700"
-                    />
-                </div>
-                {searchTerm && (
-                    <div className="text-sm font-bold text-amber-600 bg-amber-50 px-4 py-2 rounded-lg">
-                        {filteredReservations.length} résultat(s) trouvé(s)
+            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col lg:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col md:flex-row w-full gap-4 max-w-4xl">
+                    <div className="relative w-full">
+                        <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-lg">
+                            🔍
+                        </span>
+                        <input
+                            type="text"
+                            placeholder="Rechercher par nom de client..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-amber-400 bg-slate-50 transition-colors font-medium text-slate-700"
+                        />
                     </div>
-                )}
+                    
+                    <select
+                        value={paymentFilter}
+                        onChange={(e) => setPaymentFilter(e.target.value)}
+                        className="py-3 px-4 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-amber-400 bg-slate-50 transition-colors font-bold text-slate-700 min-w-[180px]"
+                    >
+                        <option value="ALL">Tous les paiements</option>
+                        <option value="PAID">Payés</option>
+                        <option value="PENDING">En attente</option>
+                    </select>
+
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="py-3 px-4 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-amber-400 bg-slate-50 transition-colors font-bold text-slate-700 min-w-[180px]"
+                    >
+                        <option value="ALL">Tous les séjours</option>
+                        <option value="UPCOMING">À venir</option>
+                        <option value="ONGOING">En cours</option>
+                        <option value="COMPLETED">Terminés</option>
+                    </select>
+                </div>
+                
+                <div className="text-sm font-bold text-amber-600 bg-amber-50 px-4 py-2 rounded-lg whitespace-nowrap">
+                    {filteredReservations.length} résultat(s)
+                </div>
             </div>
 
             {/* ========================================= */}

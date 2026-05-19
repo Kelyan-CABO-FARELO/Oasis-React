@@ -10,6 +10,7 @@ const InvoiceList = () => {
 
     // États pour la recherche et pagination
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterType, setFilterType] = useState('ALL');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
@@ -42,16 +43,21 @@ const InvoiceList = () => {
         fetchInvoices();
     }, []);
 
-    // Retour page 1 si on cherche
+    // Retour page 1 si on cherche ou on filtre
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchTerm]);
+    }, [searchTerm, filterType]);
 
-    // Filtrage par Numéro ou par Nom du client
+    // Filtrage par Numéro, par Nom du client et par Type
     const filteredInvoices = invoices.filter((inv) => {
+        const title = (inv.title || '').toLowerCase();
+        
+        if (filterType === 'FA' && !title.startsWith('fa-')) return false;
+        if (filterType === 'RET' && !title.startsWith('ret-')) return false;
+        if (filterType === 'AV' && !title.startsWith('av-cancel-')) return false;
+
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
-        const title = (inv.title || '').toLowerCase();
         const person = (inv.person || '').toLowerCase();
         return title.includes(searchLower) || person.includes(searchLower);
     });
@@ -79,23 +85,35 @@ const InvoiceList = () => {
     return (
         <div className="relative">
 
-            {/* 🔍 BARRE DE RECHERCHE */}
-            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-emerald-100 flex items-center justify-between gap-4">
-                <div className="relative w-full max-w-md">
-                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-emerald-400 text-lg">🔍</span>
-                    <input
-                        type="text"
-                        placeholder="Chercher une facture (ex: FA-2026... ou Dupont)"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-12 pr-4 py-3 border-2 border-emerald-50 rounded-xl focus:outline-none focus:border-emerald-400 bg-emerald-50/30 transition-colors font-medium text-slate-700"
-                    />
-                </div>
-                {searchTerm && (
-                    <div className="text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100">
-                        {filteredInvoices.length} facture(s)
+            {/* 🔍 BARRE DE RECHERCHE & FILTRES */}
+            <div className="mb-6 bg-white p-4 rounded-2xl shadow-sm border border-emerald-100 flex flex-col lg:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col md:flex-row w-full gap-4 max-w-3xl">
+                    <div className="relative w-full">
+                        <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-emerald-400 text-lg">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Chercher une facture (ex: FA-2026... ou Dupont)"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 border-2 border-emerald-50 rounded-xl focus:outline-none focus:border-emerald-400 bg-emerald-50/30 transition-colors font-medium text-slate-700"
+                        />
                     </div>
-                )}
+                    
+                    <select
+                        value={filterType}
+                        onChange={(e) => setFilterType(e.target.value)}
+                        className="py-3 px-4 border-2 border-emerald-50 rounded-xl focus:outline-none focus:border-emerald-400 bg-emerald-50/30 transition-colors font-bold text-slate-700 min-w-[200px]"
+                    >
+                        <option value="ALL">Tous les types</option>
+                        <option value="FA">Locations (FA)</option>
+                        <option value="RET">Rétributions (RET)</option>
+                        <option value="AV">Annulations (AV-CANCEL)</option>
+                    </select>
+                </div>
+
+                <div className="text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100 whitespace-nowrap">
+                    {filteredInvoices.length} facture(s)
+                </div>
             </div>
 
             {/* 📋 LE TABLEAU */}
@@ -128,7 +146,12 @@ const InvoiceList = () => {
 
                             return (
                                 <tr key={inv.id} className="border-b border-slate-50 hover:bg-emerald-50/50 transition-colors">
-                                    <td className="py-4 px-2 font-black text-slate-900">{inv.title}</td>
+                                    <td className="py-4 px-2 font-black text-slate-900">
+                                        {inv.title}
+                                        {inv.title.startsWith('RET-') && <span className="ml-2 text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full uppercase tracking-wider">Propriétaire</span>}
+                                        {inv.title.startsWith('AV-CANCEL-') && <span className="ml-2 text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full uppercase tracking-wider">Avoir</span>}
+                                        {inv.title.startsWith('FA-') && <span className="ml-2 text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full uppercase tracking-wider">Séjour</span>}
+                                    </td>
                                     <td className={`py-4 px-2 ${isOld ? 'text-red-500 font-bold' : 'text-slate-500'}`}>
                                         {creationDate}
                                         {isOld && <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Archivage Requis</span>}
