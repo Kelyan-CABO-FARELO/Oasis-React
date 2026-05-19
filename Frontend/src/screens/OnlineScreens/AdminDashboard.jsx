@@ -7,6 +7,7 @@ import { productService } from '../../services/productService.js';
 import { useAuthContext } from '../../contexts/AuthContext.jsx';
 import OwnerRequests from '../../components/Admin/OwnerRequests.jsx';
 import RgpdDashboard from '../../components/Admin/RgpdDashboard.jsx';
+import ProductPriceManager from '../../components/Admin/ProductPriceManager.jsx';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('reservations');
@@ -76,6 +77,10 @@ const AdminDashboard = () => {
                         <span className="text-xl">🧾</span> Factures
                     </button>
 
+                    <button onClick={() => setActiveTab('prices')} className={getMenuClass('prices')}>
+                        <span className="text-xl">💶</span> Grille Tarifaire
+                    </button>
+
                     <button onClick={() => setActiveTab('map')} className={getMenuClass('map')}>
                         <span className="text-xl">🗺️</span> Plan du Camping
                     </button>
@@ -108,6 +113,7 @@ const AdminDashboard = () => {
                         {activeTab === 'reservations' && 'Gestion des Réservations'}
                         {activeTab === 'users' && 'Base de données Clients'}
                         {activeTab === 'invoices' && 'Comptabilité & Factures'}
+                        {activeTab === 'prices' && 'Gestion de la Grille Tarifaire'}
                         {activeTab === 'map' && "Disponibilités en temps réel"}
                         {activeTab === 'rgpd' && 'Sécurité & Conformité RGPD'}
                     </h2>
@@ -115,6 +121,7 @@ const AdminDashboard = () => {
                         {activeTab === 'reservations' && 'Consultez et gérez les séjours de vos vacanciers.'}
                         {activeTab === 'users' && 'Retrouvez les fiches détaillées de vos clients.'}
                         {activeTab === 'invoices' && 'Consultez les factures et surveillez les délais de conservation (3 ans).'}
+                        {activeTab === 'prices' && "Ajustez les prix de base des différents types d'hébergements et suppléments."}
                         {activeTab === 'map' && 'Visualisez les emplacements libres et occupés aujourd\'hui sur le domaine.'}
                         {activeTab === 'rgpd' && 'Surveillez et gérez la conservation légale de vos données.'}
                     </p>
@@ -126,6 +133,8 @@ const AdminDashboard = () => {
                     {activeTab === 'users' && <UserList />}
 
                     {activeTab === 'invoices' && <InvoiceList />}
+
+                    {activeTab === 'prices' && <ProductPriceManager />}
 
                     {activeTab === 'map' && (
                         <div className="max-w-5xl mx-auto">
