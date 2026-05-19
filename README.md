@@ -74,9 +74,15 @@ Une fois le script terminé, l'application est prête à l'emploi :
 
 La base de données est initialisée avec de faux utilisateurs pour vous permettre de tester les différents espaces sécurisés :
 
-- **Administrateur :** `admin@loasis.com` / Mdp : `password`
-- **Propriétaire :** `owner_1@loasis.com` / Mdp : `password`
-- **Client standard :** `user_1@loasis.com` / Mdp : `password`
+- **👑 Espace Administrateur :**
+  - **Email :** `admin@admin.com`
+  - **Mot de passe :** `password`
+
+- **🏡 Espace Propriétaire :**
+  - Les propriétaires sont générés de manière réaliste avec des noms humoristiques français (ex: `jean.bon@loasis-proprio.fr`, `sarah.vigote@loasis-proprio.fr` ou `yves.remords@loasis-proprio.fr`).
+  - **Mot de passe :** `password`
+
+> **Note sur le Client Standard (Vacancier) :** Les clients n'ont pas besoin de se connecter pour effectuer une réservation. Le tunnel d'achat public est totalement accessible "en invité" pour simplifier le parcours.
 
 ## 💳 Tester les Webhooks Stripe (Local)
 
@@ -97,6 +103,3 @@ chmod +x stripe.sh
 La première fois, le script affichera un lien et un code. Suivez le lien pour vous connecter à votre compte Stripe de test, puis la redirection s'activera d'elle-même.
 
 Assurez-vous également que vos clés Stripe de test sont configurées dans le fichier `Backend/www/.env.local`.
-
----
-*Projet réalisé dans le cadre de la certification.*
