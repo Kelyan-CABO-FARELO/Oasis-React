@@ -78,18 +78,25 @@ La base de données est initialisée avec de faux utilisateurs pour vous permett
 - **Propriétaire :** `owner_1@loasis.com` / Mdp : `password`
 - **Client standard :** `user_1@loasis.com` / Mdp : `password`
 
----
-
 ## 💳 Tester les Webhooks Stripe (Local)
 
-Si vous souhaitez tester le cycle complet de réservation avec le paiement (et voir les factures passer du statut "En attente" à "Payé"), vous devez utiliser la [Stripe CLI](https://stripe.com/docs/stripe-cli) pour transférer les événements de paiement locaux vers le Backend.
+Si vous souhaitez tester le cycle complet de réservation avec le paiement (et voir les factures passer du statut "En attente" à "Payé"), vous n'avez pas besoin d'installer la Stripe CLI sur votre ordinateur ! 
+
+J'ai créé un script `stripe.sh` qui utilise l'image officielle Docker de Stripe pour faire le pont en toute sécurité.
+
+Dans un **terminal séparé**, à la racine du projet, lancez simplement :
 
 ```bash
-# Dans un terminal séparé
-stripe listen --forward-to localhost:8088/webhook/stripe
+# Rendre le script exécutable (la première fois uniquement)
+chmod +x stripe.sh
+
+# Lancer la redirection
+./stripe.sh
 ```
 
-Assurez-vous également que vos clés Stripe sont correctement configurées dans le fichier `Backend/www/.env.local`.
+La première fois, le script affichera un lien et un code. Suivez le lien pour vous connecter à votre compte Stripe de test, puis la redirection s'activera d'elle-même.
+
+Assurez-vous également que vos clés Stripe de test sont configurées dans le fichier `Backend/www/.env.local`.
 
 ---
 *Projet réalisé dans le cadre de la certification.*
