@@ -16,10 +16,11 @@ sleep 5
 
 echo "2️⃣  Préparation de la base de données (Symfony)..."
 # On exécute les commandes dans le container apache_oasis
-docker exec apache_oasis bash -c "cd www && composer install --no-interaction"
-docker exec apache_oasis bash -c "cd www && php bin/console d:d:c --if-not-exists --no-interaction"
-docker exec apache_oasis bash -c "cd www && php bin/console d:m:m --no-interaction"
-docker exec apache_oasis bash -c "cd www && php bin/console d:f:l --no-interaction"
+docker exec apache_oasis composer install --no-interaction
+docker exec apache_oasis php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
+docker exec apache_oasis php bin/console d:d:c --if-not-exists --no-interaction
+docker exec apache_oasis php bin/console d:m:m --no-interaction
+docker exec apache_oasis php bin/console d:f:l --no-interaction
 
 echo "3️⃣  Lancement du Frontend (React/Vite) avec Docker..."
 cd ../Frontend
