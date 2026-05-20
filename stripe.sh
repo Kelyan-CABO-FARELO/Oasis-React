@@ -4,6 +4,15 @@
 # Script pour faire tourner la Stripe CLI dans Docker (Aucune installation locale requis !)
 # ==============================================================================
 
+# Désactiver la conversion des chemins par Git Bash sous Windows (évite les bugs de volumes)
+export MSYS_NO_PATHCONV=1
+
+# Détection de winpty pour l'interactivité sous Windows (Git Bash)
+DOCKER_CMD="docker"
+if command -v winpty &> /dev/null && [ -t 1 ]; then
+    DOCKER_CMD="winpty docker"
+fi
+
 echo "💳 Gestion du Webhook Stripe via Docker..."
 
 # 1. Vérification / Connexion au compte Stripe
@@ -19,7 +28,7 @@ if [ ! -d "$HOME/.config/stripe" ]; then
     # -it : Mode interactif pour pouvoir lire le code de connexion
     # -v : Enregistre les clés d'autorisation dans votre dossier perso sur votre PC pour ne pas se reconnecter à chaque fois
     # stripe/stripe-cli login : Lance l'action de connexion officielle de Stripe
-    docker run --rm -it \
+    $DOCKER_CMD run --rm -it \
       -v "$HOME/.config/stripe:/root/.config/stripe" \
       stripe/stripe-cli login
 fi
@@ -43,7 +52,7 @@ fi
 # -v : Utilise les clés de connexion stockées précédemment pour s'authentifier auprès de Stripe
 # stripe/stripe-cli : L'image officielle Stripe
 # listen --forward-to... : Écoute les événements Stripe et les renvoie vers votre API sur le port 8088 de votre PC
-docker run --rm -it \
+$DOCKER_CMD run --rm -it \
   $ADD_HOST \
   -v "$HOME/.config/stripe:/root/.config/stripe" \
   stripe/stripe-cli \

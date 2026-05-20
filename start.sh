@@ -5,6 +5,9 @@
 # Ce script permet de démarrer le projet sur une machine avec uniquement Docker
 # ==============================================================================
 
+# Désactiver la conversion des chemins par Git Bash sous Windows (évite les bugs de volumes)
+export MSYS_NO_PATHCONV=1
+
 echo "🏕️ Démarrage du projet Oasis..."
 
 echo "1️⃣  Lancement du Backend (Symfony & MariaDB)..."
