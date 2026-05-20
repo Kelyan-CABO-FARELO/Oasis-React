@@ -96,6 +96,18 @@ class InvoiceAutoGeneratorSubscriber implements EventSubscriberInterface
                 ->getResult();
 
             if (!empty($existing)) {
+                // S'il existe déjà en base, on s'assure que le fichier PDF physique existe sur le disque.
+                // Si le fichier a été supprimé ou est manquant, on le régénère.
+                foreach ($existing as $inv) {
+                    $physicalPath = __DIR__ . '/../../public' . $inv->getPath();
+                    if ($inv->getPath() && $inv->getPath() !== 'generation_en_attente' && !file_exists($physicalPath)) {
+                        $html = $this->twig->render('invoice/pdf.html.twig', [
+                            'invoice' => $inv,
+                        ]);
+                        $filename = $inv->getTitle() . '.pdf';
+                        $this->pdfService->generateAndSavePdf($html, $filename);
+                    }
+                }
                 continue;
             }
 

@@ -108,14 +108,8 @@ const RetributionsGrid = ({ products, pendingEarnings, invoices }) => {
                                                                 // Utiliser API_ROOT pour cibler le bon serveur backend !
                                                                 const fileUrl = `${API_ROOT}${invoice.path}`;
                                                                 
-                                                                // Déclencher le téléchargement direct du PDF
-                                                                const link = document.createElement('a');
-                                                                link.href = fileUrl;
-                                                                link.setAttribute('download', `${invoice.title}.pdf`);
-                                                                link.setAttribute('target', '_blank');
-                                                                document.body.appendChild(link);
-                                                                link.click();
-                                                                document.body.removeChild(link);
+                                                                // Ouvrir le PDF dans un nouvel onglet pour téléchargement direct
+                                                                window.open(fileUrl, '_blank');
                                                             }}
                                                             disabled={!invoice.path || invoice.path === 'generation_en_attente'} 
                                                             className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors disabled:opacity-30 text-xs" 
